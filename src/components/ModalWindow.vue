@@ -2,7 +2,7 @@
         <div class="modal" @click.self="handleClose">
             <div class="modal__content">
                 <h2>{{ title }}</h2>
-                    <FolderTree :folders="mockFolders" @selectFolder="handleSelectFolder"/>
+                    <FolderTree :folders="mockFolders" :selectedFolderId="selectedFolderId" @selectFolder="handleSelectFolder"/>
                 <button @click="handleSaveAndClose" class="btn" :disabled="selectedFolderId === null">Ок</button>
                 <button @click="handleClose" class='btn close-btn'>Закрыть</button>
             </div>
@@ -38,7 +38,7 @@ export default defineComponent({
         const isModalOpen = ref(false);
         const selectedFolderId = ref<number | null>(null);
 
-        const handleSelectFolder = (folderId: number) => {
+        const handleSelectFolder = (folderId: number | null) => {
             selectedFolderId.value = folderId; 
             console.log(`Selected folder ID: ${selectedFolderId.value}`);
         };

@@ -1,8 +1,8 @@
 <template>
     <ul>
       <li v-for="folder in folders" :key="folder.id">
-        <div class="folder" :class="{ selected: selectedFolderId === folder.id }" @click.stop="handleFolderClick(folder.id)">
-          <span class="folder-name">{{ folder.name }}</span>
+        <div class="folder"  @click.stop="handleFolderClick(folder.id)">
+          <span class="folder-name" :class="selectedFolderId === folder.id ? 'selected' : ''">{{ folder.name }}</span>
           <span v-if="folder.children.length" class="toggle-icon">
             {{ expandedFolders.includes(folder.id) ? '-' : '+' }}
           </span>
@@ -12,6 +12,7 @@
         <FolderTree
           v-if="expandedFolders.includes(folder.id) && folder.children.length"
           :folders="folder.children"
+          :selectedFolderId="selectedFolderId"
           @selectFolder="emitSelectedFolder"
         />
       </li>
@@ -33,12 +34,15 @@
         folders: {
             type: Array as PropType<Folder[]>,
             required: true,
-      }
+      },
+        selectedFolderId: {
+            type: [Number, null],
+            required: true,
+        },
     },
     setup(_, { emit }) {
       
       const expandedFolders = ref<number[]>([]);
-      const selectedFolderId = ref<number | null>(null);
   
       const toggleFolder = (folderId: number) => {
         if (expandedFolders.value.includes(folderId)) {
@@ -50,19 +54,16 @@
   
       const handleFolderClick = (folderId: number) => {
         toggleFolder(folderId);
-        selectedFolderId.value = folderId;
         emit('selectFolder', folderId);
 
     };
 
       const emitSelectedFolder = (folderId: number) => {
-        selectedFolderId.value = folderId;
         emit('selectFolder', folderId); // передаем выбранную папку вверх по иерархии
     };
   
       return {
         expandedFolders,
-        selectedFolderId,
         toggleFolder,
         handleFolderClick,
         emitSelectedFolder
